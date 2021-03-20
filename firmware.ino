@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 
 const char* ssid = "MEMS Packaging lab";
-const char* password = "@pressure";
+const char* password = "*******";
 
 const char* host = "www.cense.iisc.ac.in";
 const char* streamId = "cnssrv/upload1.php";
@@ -18,7 +18,7 @@ long Tt = 0;
 long Ht = 0;
 
 long lastMsg = 0;
-const long int time1 = 60000; // 5->min*sec*1000
+const long int time1 = 60000; //5->min*sec*1000
 
 
 WiFiClient espclient;
@@ -54,15 +54,14 @@ void setup() {
 }
 
 void loop() {
-
- 
+  
   float temp(NAN), hum(NAN), pres(NAN);
   float P,T,H;
   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
   BME280::PresUnit presUnit(BME280::PresUnit_bar);
-  P = float(int(bme.pres())/100.00); // the unit in mbar and two decimal point aproximation  
-  T = float(int(bme.temp()*100)/100.00); // two decimal point aproximation
-  H = float(int(bme.hum()*100)/100.00); // two decimal point aproximation
+  P = float(int(bme.pres())/100.00); //the unit in mbar and two decimal point aproximation  
+  T = float(int(bme.temp()*100)/100.00); //two decimal point aproximation
+  H = float(int(bme.hum()*100)/100.00); //two decimal point aproximation
   
   StaticJsonBuffer <150> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();  
@@ -89,7 +88,7 @@ void loop() {
       return;
     }
     
-    // We now create a URI for the request
+    //Create a URI for the request
     String url = "http://";
     url += host;
     url += "/";
@@ -100,27 +99,26 @@ void loop() {
     Serial.print("Requesting URL: ");
     Serial.println(url);
     
-    // This will send the request to the server
+    //This will send the request to the server
     espclient.print(String("GET ") + url +" HTTP/1.1\r\n" +
                  "Host: " + host + "\r\n" + 
                  "Connection: close\r\n\r\n");  
     unsigned long timeout = millis();
     while (espclient.available() == 0) {
       if (millis() - timeout > 5000) {
-        Serial.println(">>> espClient Timeout !");
+        Serial.println(">>>espClient Timeout !");
         espclient.stop();
         return;
       }
     }
     
-    // Read all the lines of the reply from server and print them to Serial
+    //Read all the lines of the reply from server and print them to Serial
     while(espclient.available()){
       String line = espclient.readStringUntil('\r');
       Serial.print(line);
     }
     
     Serial.println();
-    //Serial.println("closing connection");
   }
 
   if (!pubclient.connected()) {
@@ -131,34 +129,33 @@ void loop() {
 
   long now2 = millis();
   if (P<=pmin || P>=pmax){
-    //Serial.println(now);
+    
     if (now2 - Pt >= time1){
       char outstr[10];
       dtostrf(P,7, 3, outstr);
-      snprintf (msg, 150, "Pressure outof range %s",outstr);
+      snprintf (msg, 150, "Pressure out of range %s",outstr);
       pubclient.publish("testp/Noti", msg);
       Pt = now2;  
       Serial.println("Pressure published");    
     }
   }
-  //Serial.println("P->T");
   
   if (T<=tmin || T>=tmax){
     if(now2-Tt > time1){
       char outstr[10];
       dtostrf(T,7, 3, outstr);
-      snprintf (msg, 150, "Temperature outof range %s",outstr);
+      snprintf (msg, 150, "Temperature out of range %s",outstr);
       pubclient.publish("testp/Noti", msg);
       Tt = now2;
       Serial.println("Tempreture published");      
     }
   }
-  //Serial.println("T->H");
+  
   if (H<=hmin || H>=hmax){
     if(now2 - Ht > time1){
       char outstr[10];
       dtostrf(H,7, 3, outstr);
-      snprintf (msg, 150, "Humidity outof range %s",outstr);
+      snprintf (msg, 150, "Humidity out of range %s",outstr);
       pubclient.publish("testp/Noti", msg);
       Ht = now2;  
       Serial.println("Humidity published");   
@@ -168,9 +165,8 @@ void loop() {
 
 
 void setup_wifi() {
-
   delay(10);
-  // We start by connecting to a WiFi network
+  //Connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -195,31 +191,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
   char data2[10] = "Send Data";
   int count = 0;
   for (int i = 0; i < length; i++) {
-    //Serial.print((char)payload[i]);
     if(data2[i] == (char)payload[i]) {
       count = count + 1;
     }
     if (count == 9){
       Serial.println("Sending Status");
-      
       pubclient.publish("testp/response",data1);
     }
   }
 }
 
 void reconnect() {
-  // Loop until we're reconnected
+  //Loop until reconnected
   while (!pubclient.connected()) {
     Serial.print("Attempting MQTT connection...");
-    // Create a random pubclient ID
-    // Attempt to connect
-    if (pubclient.connect("PKLNODE","pfluekdn","KIrRRhrEKjJX")) {
+    //Create a random pubclient ID
+    //Attempt to connect
+    if (pubclient.connect("PKLNODE","****","****")) {
       Serial.println("connected");
     } else {
       Serial.print("failed, rc=");
       Serial.print(pubclient.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
+      Serial.println("try again in 5 seconds");
+      //Wait 5 seconds before retrying
       delay(5000);
     }
   }
