@@ -74,82 +74,81 @@
 
 	<script>
 		
-	//convert php variables to javascript variable
-	var y = <?php echo $yy ?>;
-	var m = <?php echo $mm ?>;
-	m=m-1;
-	var d=<?php echo $dd ?>;
-	var h=<?php echo $hh ?>;
-	var min=<?php echo $minin ?>;
+		//convert php variables to javascript variable
+		var y = <?php echo $yy ?>;
+		var m = <?php echo $mm ?>;
+		m=m-1;
+		var d=<?php echo $dd ?>;
+		var h=<?php echo $hh ?>;
+		var min=<?php echo $minin ?>;
 
-	// Create the chart
- 
-	Highcharts.setOptions({
-    		global: {
-        	useUTC: true
-    		}
-	});
+		// Create the chart
+		Highcharts.setOptions({
+			global: {
+			useUTC: true
+			}
+		});
 
-	
-	
-	Highcharts.stockChart('container', 
-	{
-		chart: {
-			height: 500
-		},
 
-		xAxis: {
-			title:{text: 'Date Time'},
-			categories:[<?php echo join($tim,',')?>],
-			type: 'datetime',
-		},
-		rangeSelector: {
-		    	allButtonsEnabled: true,
-		    	buttons: [{
-				type: 'day',
-				count:1,
-				text: '1Day'
-			},{
-				type: 'day',
-				count: 4,
-				text: '4days'
-		    	},{
-				type: 'week',
-				count: 1,
-				text: 'Week'
-		        },{	
-				type: 'all',
-				text: 'all'
-		        }],
-			buttonTheme: {
-			width: 60
+
+		Highcharts.stockChart('container', 
+		{
+			chart: {
+				height: 500
 			},
-		    	selected: 0
-		},
-		yAxis: {
-			title:{text: 'Reletive Humidity'}
-		},
-		title: {
-		    	text: 'Packaging Lab: Node 1'
-		},
-		subtitle: {
-		    	text: 'Humidity sensor'
-		},
-		_navigator: {
-		    	enabled: false
-		},
-		tooltip: {
-			valueDecimals: 1,
-			valueSuffix: ' %'
-		},
-	    	series: [{
-			data:[<?php echo join($val,',')?>],	
-			name: 'Humidity',
-			//point at which the x-axis should start
-			pointStart: Date.UTC(y, m, d, h, min),
-			pointInterval: 5 * 1000 // has to be approx 5 sec-
-		}]
-	    });
+
+			xAxis: {
+				title:{text: 'Date Time'},
+				categories:[<?php echo join($tim,',')?>],
+				type: 'datetime',
+			},
+			rangeSelector: {
+				allButtonsEnabled: true,
+				buttons: [{
+					type: 'day',
+					count:1,
+					text: '1Day'
+				},{
+					type: 'day',
+					count: 4,
+					text: '4days'
+				},{
+					type: 'week',
+					count: 1,
+					text: 'Week'
+				},{	
+					type: 'all',
+					text: 'all'
+				}],
+				buttonTheme: {
+				width: 60
+				},
+				selected: 0
+			},
+			yAxis: {
+				title:{text: 'Reletive Humidity'}
+			},
+			title: {
+				text: 'Packaging Lab: Node 1'
+			},
+			subtitle: {
+				text: 'Humidity sensor'
+			},
+			_navigator: {
+				enabled: false
+			},
+			tooltip: {
+				valueDecimals: 1,
+				valueSuffix: ' %'
+			},
+			series: [{
+				data:[<?php echo join($val,',')?>],	
+				name: 'Humidity',
+				//point at which the x-axis should start
+				pointStart: Date.UTC(y, m, d, h, min),
+				pointInterval: 5 * 1000 // has to be approx 5 sec-
+			}]
+		    });
 
 	</script>
 </html>
